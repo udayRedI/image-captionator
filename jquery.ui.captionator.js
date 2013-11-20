@@ -28,18 +28,14 @@
 			});
 
 		        $(self.element).hover(function(){
-                                 $(caption).animate({
-                                     height:'toggle'
-                                 });
-                            }
-                            ,function() {
-                                 $(caption).animate({
-                                     height:'toggle'
-                                 },function(){
-                                     self._trigger("mouseout", null);
-                                 });
+                            self._animate(caption, function(){
                             });
-                          
+                            },function() {
+                             self._animate(caption, function(){
+                                 self._trigger("mouseout", null);
+                             });
+                        });
+
 			self._trigger("added", null, caption);
 			
 			$(window).resize(function(){
@@ -75,5 +71,13 @@
 					break;
 			}
 		},
+
+                _animate: function(caption, callback){
+                    $(caption).animate({
+                        height:'toggle'
+                    },function(){
+                        callback();
+                    });
+                }
 	});
 })(jQuery);
