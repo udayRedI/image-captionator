@@ -4,80 +4,123 @@
 		options: {
 			location: "bottom",
 			color: "#fff",
-			backgroundColor: "#000"
+			backgroundColor: 'rgba(0,0,0,.5);',
+                        height:'400px',
+                        width:'600px',
+                        captionHeight:'30px',
+                        slideTimeOut:1000
 		},
 				
 		_create: function() {
 			
-			var self = this,
-				options = self.options,
-				element = self.element,
-				caption = $("<span></span>").text(element.attr("alt")).addClass("ui-widget ui-caption").css({
-					backgroundColor: options.backgroundColor,
-					color: options.color,
-					width: element.width()
-				}).insertAfter(element),
-				captionWidth = element.width() - parseInt(caption.css("paddingLeft")) - parseInt(caption.css("paddingRight")),
-				captionHeight = caption.outerHeight() - parseInt(caption.css("paddingTop")) + parseInt(caption.css("paddingBottom"));
-				
-			caption.css({
-				width: captionWidth,
-				top: (options.location === "top") ? element.offset().top : element.offset().top + element.height() - captionHeight,
-				left: element.offset().left,
-				display: "none"
-			});
+                        var caption;
+                        var self = this;
+                        var options = self.options;
+                        var captionedImages = $('captionImage');
+                        $(captionedImages).css('height',options.height);
+                        $(captionedImages).css('width',options.width);
+                        var captionHeight = options.captionHeight;
+                        position = options.location;
+                        var slideTimeOut = options.slideTimeOut;
 
-		        $(self.element).hover(function(){
-                            self._animate(caption, function(){
+                        for(imageIndex = 0; imageIndex < captionedImages.length; imageIndex++){
+                            captionedImage = captionedImages[imageIndex];
+                            var img = $('<img>');
+                            img.attr('src', $(captionedImage).attr('src'));
+                            img.attr('height', parseInt($(captionedImage).attr('height')));
+                            img.attr('width', parseInt($(captionedImage).attr('width')));
+                            $(captionedImage).append(img);
+		            caption = $("<span></span>").text($(captionedImage).attr("alt")).addClass("ui-caption").css({
+				backgroundColor: options.backgroundColor,
+				color: options.color,
+				width: parseInt($(captionedImage).attr('width')),
+                                height: captionHeight,
+			    });
+                            $(captionedImage).append(caption);
+                            if(position == "bottom"){
+                                caption.css('top', img.height());
+                            } else {
+                                slide = -parseInt(caption.css('height'))-parseInt(caption.css('padding'))-parseInt(caption.css('padding'));
+                                caption.css('top', slide);
+                            }
+                        }
+
+		        $('captionImage').mouseenter(function(){
+                            var _this = this;
+                            caption = $(this).find('span');
+                            image = $(this).find('img');
+                            var slideValue = self._getMouseEnterValue(caption, image);
+                            self._animate(caption, slideValue, slideTimeOut, function() {
+                                self._trigger("captionSlideIn", null);
                             });
-                            },function() {
-                             self._animate(caption, function(){
-                                 self._trigger("mouseout", null);
-                             });
+                        })
+                        .mouseout(function() {
+                            var slideValue = self._getMouseOutValue(caption, image);
+                            self._animate(caption, slideValue, slideTimeOut, function() {
+                                self._trigger("captionSlideOut", null);
+                            });
                         });
 
-			self._trigger("added", null, caption);
-			
-			$(window).resize(function(){
-				caption.css({
-					top: (options.location === "top") ? element.offset().top : element.offset().top + element.height() - captionHeight,
-					left: element.offset().left
-				});
-			});
+			//self._trigger("added", null, caption);
 		},
 				
 		destroy: function() {			
-			this.element.next().remove();
-			
+			this.image.next().remove();
 			$(window).unbind("resize");
 		},
 		
 		_setOption: function(option, value) {
 			$.Widget.prototype._setOption.apply( this, arguments );
 			
-			var element = this.element,
-				caption = element.next(),
+			var image = this.element,
+				caption = image.next(),
 				captionHeight = caption.outerHeight() - parseInt(caption.css("paddingTop")) + parseInt(caption.css("paddingBottom"));
 			
 			switch (option) {
 				case "location":
-					(value === "top") ? caption.css("top", element.offset().top) : caption.css("top", element.offset().top + element.height() - captionHeight);
+					(value === "top") ? caption.css("top", image.offset().top) : caption.css("top", image.offset().top + image.height() - captionHeight);
 					break;
 				case "color":
-					element.next().css("color", value);
+					image.next().css("color", value);
 					break;
 				case "backgroundColor":
-					element.next().css("backgroundColor", value);
+					image.next().css("backgroundColor", value);
 					break;
 			}
 		},
 
-                _animate: function(caption, callback){
+                _animate: function(caption, slideValue,  slideTimeOut, callback){
                     $(caption).animate({
-                        height:'toggle'
-                    },function(){
+                        top:slideValue
+                    },slideTimeOut, function(){
                         callback();
                     });
+                },
+
+                _getMouseEnterValue: function(caption,image){
+                    var position =  this.options.location;
+
+                    if(position == 'top'){
+                        return 0;
+                    } else if(position == 'bottom'){
+                        padding = parseInt(caption.css('padding'));
+                        captionHeight = parseInt(caption.css('height'));
+                        imageHeight = parseInt(image.height());
+                        slideValue = imageHeight-captionHeight-padding-padding;
+                        return slideValue; 
+                    }
+                },
+
+                _getMouseOutValue: function(caption,image){
+                    var position = this.options.location;
+
+                    if(position == 'top'){
+                        slideValue = -parseInt(caption.css('height'))-parseInt(caption.css('padding'))-parseInt(caption.css('padding'));
+                        return slideValue;
+                    } else if(position == 'bottom'){
+                        slideValue = parseInt(image.height());
+                        return slideValue;
+                    }
                 }
 	});
 })(jQuery);
