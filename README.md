@@ -5,9 +5,9 @@ This project is dependent on
 - jquery.ui.widget.js v1.8
 
 Usage:
-place 
-<imageCaptionator src="image.jpg" alt="Image description"></imageCaptionator>
-The src contains the image file, alt contains the description of the image. Put the below line in the script tag and it works.
+Place 
+&lt;imageCaptionator src="image.jpg" alt="Image caption"&gt;&lt;/imageCaptionator&gt;
+The 'src' contains the image file, 'alt' contains the caption of the image. Put the below line in the script tag and it works.
 $("img").captionator();
 <br />//By default the caption is initiated at the bottom of the image.
 
