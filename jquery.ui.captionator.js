@@ -16,7 +16,7 @@
                         var caption;
                         var self = this;
                         var options = self.options;
-                        var captionedImages = $('captionImage');
+                        var captionedImages = $('imageCaptionator');
                         $(captionedImages).css('height',options.height);
                         $(captionedImages).css('width',options.width);
                         var captionHeight = options.captionHeight;
@@ -27,13 +27,13 @@
                             captionedImage = captionedImages[imageIndex];
                             var img = $('<img>');
                             img.attr('src', $(captionedImage).attr('src'));
-                            img.attr('height', parseInt($(captionedImage).attr('height')));
-                            img.attr('width', parseInt($(captionedImage).attr('width')));
+                            img.attr('height', parseInt(options.height));
+                            img.attr('width', parseInt(options.width));
                             $(captionedImage).append(img);
 		            caption = $("<span></span>").text($(captionedImage).attr("alt")).addClass("ui-caption").css({
 				backgroundColor: options.backgroundColor,
 				color: options.color,
-				width: parseInt($(captionedImage).attr('width')),
+				width: parseInt($(img).css("width")),
                                 height: captionHeight,
 			    });
                             $(captionedImage).append(caption);
@@ -45,7 +45,7 @@
                             }
                         }
 
-		        $('captionImage').mouseenter(function(){
+		        $('imageCaptionator').mouseenter(function(){
                             var _this = this;
                             caption = $(this).find('span');
                             image = $(this).find('img');
