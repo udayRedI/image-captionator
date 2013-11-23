@@ -12,7 +12,7 @@ $("img").captionator();
 
 
 These are the three options provided to initiate the caption in the images.
-$("img").captionator(
+$("imageCaptionator").captionator(
     {
         location: "bottom",
         color: "#fff",
