@@ -7,7 +7,7 @@ This project is dependent on
 Usage:
 Place &lt;imageCaptionator src="image.jpg" alt="Image caption"&gt;&lt;/imageCaptionator&gt;
 <br />The 'src' contains the image file, 'alt' contains the caption of the image. Put the below line in the script tag and it works.
-$("img").captionator();
+$("imageCaptionator").captionator();
 <br />//By default the caption is initiated at the bottom of the image.
 
 
